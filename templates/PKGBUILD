@@ -13,16 +13,26 @@ url=""""
 license=({{LICENSE}})
 groups=()
 depends=()
+#ifeq {{VCS}} {{EMPTY}}
+makedepends=()
+provides=()
+conflicts=()
+#else
 makedepends=({{VCS}})
 provides=(""${pkgname{{VCS_NOSUFFIX}}}"")
 conflicts=(""${pkgname{{VCS_NOSUFFIX}}}"")
+#endif
 replaces=()
 backup=()
 options=()
 install=
 source=(""{{VCS_PREFIX}}{{URL}}{{URL_SUFFIX}}"")
 noextract=()
+#ifeq {{VCS}} {{EMPTY}}
+sha256sums=('abcde') # run `makepkg -g` and replace here
+#else
 sha256sums=('SKIP')
+#endif
 
 
 #ifneq {{VCS}} {{EMPTY}}
