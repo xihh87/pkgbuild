@@ -1,0 +1,93 @@
+#!/usr/bin/bash
+#set -x #uncomment for debug
+parse_args()
+{
+	while [ -n "$1" ]; do
+	case "$1" in
+		*git)
+			ARGS[${#ARGS[@]}]='-DVCS=git'
+		;;
+		*hg)
+			ARGS[${#ARGS[@]}]='-DVCS=hg'
+		;;
+		*bzr)
+			ARGS[${#ARGS[@]}]='-DVCS=bzr'
+		;;
+		*cvs)
+			ARGS[${#ARGS[@]}]='-DVCS=cvs'
+		;;
+		*darcs)
+			ARGS[${#ARGS[@]}]='-DVCS=darcs'
+		;;
+		*svn)
+			ARGS[${#ARGS[@]}]='-DVCS=svn'
+		;;
+		*vcs)
+			ARGS[${#ARGS[@]}]='-DVCS=vcs'
+		;;
+		*haskell)
+			ARGS[${#ARGS[@]}]='-DLANG=haskell'
+		;;
+		*perl)
+			ARGS[${#ARGS[@]}]='-DLANG=perl'
+		;;
+		*python)
+			ARGS[${#ARGS[@]}]='-DLANG=python'
+		;;
+		*ruby)
+			ARGS[${#ARGS[@]}]='-DLANG=rubygem'
+		;;
+		*split)
+			ARGS[${#ARGS[@]}]='-DSPLIT'
+		;;
+		*gnome)
+			ARGS[${#ARGS[@]}]='-DENV=gnome'
+		;;
+		-s|--source)
+			shift
+			ARGS[${#ARGS[@]}]='-DSOURCE_URL='"`escape_chars $1`"
+		;;
+		-u|--url)
+			shift
+			ARGS[${#ARGS[@]}]='-DURL='"`escape_chars $1`"
+		;;
+		commit=*|branch=*|tag=*)
+			ARGS[${#ARGS[@]}]='-DURL_SUFFIX="#'"`escape_chars $1`"
+		;;
+		*)
+			ARGS[${#ARGS[@]}]="$arg"
+		;;
+	esac
+	shift
+	done
+}
+
+escape_chars()
+{
+	echo "$1" | sed -re 's#([:/=])#"\1#g'
+}
+
+find_template()
+{
+	DIR=/usr/share/pkbuild
+	which xdg-user-dir >/dev/null && \
+	[ -r `xdg-user-dir TEMPLATES`/PKGBUILD.inc ] && \
+	[ -r `xdg-user-dir TEMPLATES`/PKGBUILD ] && \
+	DIR=`xdg-user-dir TEMPLATES`
+}
+
+main()
+{
+	ARGS=()
+	parse_args "$@"
+	find_template
+	gpp \
+		-U "{{" "}}" "(" "," ")}}" "{{" "}}" "@" "\"" \
+		-M "#" "\n" " " " " "\n" "(" ")" \
+		+c "/*" "*/" +c "//" "\n" \
+		${ARGS[@]} \
+		-x \
+		"$DIR/PKGBUILD"
+}
+
+main "$@"
