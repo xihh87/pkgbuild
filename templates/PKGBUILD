@@ -1,0 +1,116 @@
+#include ./PKGBUILD.inc
+# Maintainer: Joshua Haase <hahj87@gmail.com>
+#ifdef SPLIT
+pkgname=('pkg1' 'pkg2')
+#else
+pkgname=NAME{{VCS_SUFFIX}}
+#endif
+pkgver=VERSION
+pkgrel=1
+pkgdesc=""""
+arch=('i686' 'x86_64' 'armv7h')
+url=""""
+license=({{LICENSE}})
+groups=()
+depends=()
+makedepends=({{VCS}})
+provides=(""${pkgname{{VCS_NOSUFFIX}}}"")
+conflicts=(""${pkgname{{VCS_NOSUFFIX}}}"")
+replaces=()
+backup=()
+options=()
+install=
+source=(""{{VCS_PREFIX}}{{URL}}{{URL_SUFFIX}}"")
+noextract=()
+sha256sums=('SKIP')
+
+
+#ifneq {{VCS}} {{EMPTY}}
+pkgver() {
+	cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+#ifeq {{VCS}} git
+# tags available
+	#printf ""%s"" ""$(git describe --tags | sed 's/\([^-]*-\)g/r\1/;s/-/./g')""
+
+# no tags available
+	#printf ""r%s.%s"" ""$(git rev-list --count HEAD)"" ""$(VCS rev-parse --short HEAD)""
+#endif
+#ifeq {{VCS}} bzr
+# Bazaar
+	#printf "r%s" "$(bzr revno)"
+#endif
+#ifeq {{VCS}} hg
+# Mercurial
+	#printf "r%s.%s" "$(hg identify -n)" "$(hg identify -i)"
+#endif
+#ifeq {{VCS}} svn
+# Subversion
+	#printf "r%s" "$(svnversion | tr -d 'A-z')"}
+#endif
+}
+
+#endif
+prepare() {
+	cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+	#patch -p1 -i ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}.patch{{PKGVER}}""
+}
+
+build() {
+	cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+	#./autogen.sh
+	#./configure --prefix=""/usr""
+	make
+}
+
+check() { cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+	#make -k check
+}
+
+#ifdef SPLIT
+package_pkg1() {
+        # options and directives that can be overridden
+        pkgdesc=""
+        arch=()
+        url=""
+        license=('UNKNOWN')
+        groups=()
+        depends=()
+        optdepends=()
+        provides=()
+        conflicts=()
+        replaces=()
+        backup=()
+        options=()
+        install=
+        changelog=
+
+	cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+	make DESTDIR=""$pkgdir/"" install-pkg1
+}
+
+package_pkg2() {
+        # options and directives that can be overridden
+        pkgdesc=""
+        arch=()
+        url=""
+        license=('UNKNOWN')
+        groups=()
+        depends=()
+        optdepends=()
+        provides=()
+        conflicts=()
+        replaces=()
+        backup=()
+        options=()
+        install=
+        changelog=
+
+	cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+	make DESTDIR=""$pkgdir/"" install-pkg2
+}
+#else
+package() {
+	cd ""$srcdir/${pkgname{{VCS_NOSUFFIX}}}{{PKGVER}}""
+	make DESTDIR=""$pkgdir/"" install
+}
+#endif
