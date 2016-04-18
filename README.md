@@ -19,7 +19,7 @@ Where:
 
 ```
 VCS := { git | hg | bzr | svn }
-VCSOPTS := { commit=COMMIT branch=BRANCH tag=TAG }
+VCSOPTS := { commit=<COMMIT> | branch=<BRANCH> | tag=<TAG> }
 LANG := { python | perl | haskell }
 OPTIONS := { -s <SOURCE_URL> | -u <PROJECT_URL> | split }
 ```
