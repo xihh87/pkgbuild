@@ -1,5 +1,5 @@
 #include ./PKGBUILD.inc
-# Maintainer: Joshua Haase <hahj87@gmail.com>
+# Maintainer: {{NAME}} <{{EMAIL}}>
 #ifdef SPLIT
 pkgname=('pkg1' 'pkg2')
 #else

@@ -31,3 +31,16 @@
 #ifndef SOURCE_URL
 #define SOURCE_URL URL
 #endif
+#ifndef NAME
+#define NAME #exec printf ""`git config --global --get user.name`""
+#endif
+#ifndef EMAIL
+#define EMAIL #exec printf ""`git config --global --get user.email`""
+#endif
+// NAME OR EMAIL not defined in git command
+#ifeq {{NAME}} {{EMPTY}}
+#define NAME NAME
+#endif
+#ifeq {{EMAIL}} {{EMPTY}}
+#define EMAIL EMAIL
+#endif
