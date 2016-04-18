@@ -1,0 +1,3 @@
+DESTDIR:=/
+PREFIX:=/usr
+PKGUILD_DIR:=$(PREFIX)/share/pkgbuild
